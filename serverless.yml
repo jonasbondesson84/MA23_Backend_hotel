@@ -8,6 +8,38 @@ service: hotel
 provider:
   name: aws
   runtime: nodejs20.x
+  profile: ${env:PROVIDER_PROFILE}
+  region: eu-north-1
+  iam:
+    role: ${env:PROVIDER_IAM_ROLE}
+
+plugins:
+  - serverless-dotenv-plugin
+  # - serverless-webpack
+
+package:
+  individually: true
+
+build:
+  esbuild: false
+
+
+resources:
+  Resources:
+    hotelDB:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:RESOURCES_TABLENAME}
+        AttributeDefinitions: 
+          - AttributeName: id
+            AttributeType: S
+        KeySchema: 
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+  
+
 
 functions:
   hello:
