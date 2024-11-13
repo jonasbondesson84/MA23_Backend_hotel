@@ -58,5 +58,16 @@ functions:
     handler: functions/booking/index.handler
     events:
       - httpApi:
-          path: /book
+          path: /booking
           method: post
+
+  confirmBooking:
+    handler: functions/confirmBooking/confirmBooking.handler
+    events:
+      - httpApi:
+          path: /booking/confirm
+          method: get
+          request:
+          parameters:
+          querystrings:
+            bookingID: true
