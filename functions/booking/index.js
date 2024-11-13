@@ -33,9 +33,10 @@ exports.handler = async (event, context) => {
         "suite": 3
     };
 
-    const totalCapacity = rooms.reduce((sum, room) => {
+    const roomsArray = Array.isArray(rooms) ? rooms : rooms[0].split(', ').map(room => room.trim());
+    const totalCapacity = roomsArray.reduce((sum, room) => {
         const [roomType] = room.split('-');
-        return sum + (roomCapacity[roomType] || 0);
+        return sum + (roomCapacity[roomType.toLowerCase()] || 0);
     }, 0);
 
     if (totalCapacity < guests) {
@@ -78,5 +79,5 @@ exports.handler = async (event, context) => {
 // "checkInDate": "21.01.22",
 // "checkOutDate": "21.01.22",
 // "guests": 5,
-// "rooms": ["svit-1, dubbel-1"]
+// "rooms": ["suite-1", "double-1"]
 // }
