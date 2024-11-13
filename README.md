@@ -82,9 +82,22 @@ The confirmBooking endpoint retrieves a booking confirmation based on a provided
 	•	Path: /booking/confirm
 	•	Query Parameter:
 	•	bookingID (required): The unique ID of the booking to confirm.
+ 
+
+### bookings Endpoint
+
+The bookings endpoint retrieves a list of all bookings to provide an overview of hotel occupancy.
+	•	Method: GET
+	•	Path: /bookings
+
 
 ## Functionality
 
+### confirmBooking:
 	•	If bookingID is provided: Returns a confirmation with booking details, including guest count, room count, total cost, check-in and check-out dates, and guest name.
 	•	If bookingID is missing: Returns an error indicating the ID is required.
+	•	Error Handling: Responds with a general error message if an internal error occurs.
+
+### bookings:
+	•	Returns a list of all bookings with details including booking ID, check-in and check-out dates, guest count, room count, and guest name.
 	•	Error Handling: Responds with a general error message if an internal error occurs.
