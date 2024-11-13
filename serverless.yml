@@ -54,3 +54,17 @@ functions:
       - httpApi:
           path: /book
           method: get
+
+
+
+  confirmBooking:
+    handler: functions/confirmBooking/confirmBooking.handler
+    events:
+      - httpApi:
+          path: /booking/confirm
+          method: get
+          request:
+          parameters:
+          querystrings:
+            bookingID: true
+
