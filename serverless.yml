@@ -71,3 +71,10 @@ functions:
           parameters:
           querystrings:
             bookingID: true
+
+  addRooms:
+    handler: functions/rooms/index.handler
+    events:
+      - httpApi:
+          path: /rooms/add
+          method: post
