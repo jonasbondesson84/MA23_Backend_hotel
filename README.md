@@ -67,3 +67,24 @@ This will start a local emulator of AWS Lambda and tunnel your requests to and f
 Now you can invoke the function as before, but this time the function will be executed locally. Now you can develop your function locally, invoke it, and see the results immediately without having to re-deploy.
 
 When you are done developing, don't forget to run `serverless deploy` to deploy the function to the cloud.
+
+
+# MA23_Backend_hotel API
+
+This project is a serverless hotel booking API built using AWS Lambda, DynamoDB, and API Gateway.
+
+## Endpoints
+
+### confirmBooking Endpoint
+
+The confirmBooking endpoint retrieves a booking confirmation based on a provided bookingID.
+	•	Method: GET
+	•	Path: /booking/confirm
+	•	Query Parameter:
+	•	bookingID (required): The unique ID of the booking to confirm.
+
+## Functionality
+
+	•	If bookingID is provided: Returns a confirmation with booking details, including guest count, room count, total cost, check-in and check-out dates, and guest name.
+	•	If bookingID is missing: Returns an error indicating the ID is required.
+	•	Error Handling: Responds with a general error message if an internal error occurs.
