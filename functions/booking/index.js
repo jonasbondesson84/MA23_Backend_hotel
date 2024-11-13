@@ -18,7 +18,11 @@ exports.handler = async (event, context) => {
         nanoid = module.nanoid;
       }
     const body = JSON.parse(event.body);
-
+    const requiredParameters = ["checkInDate", "checkOutDate", "guests", "name", "email", "rooms"];
+    const missingParameters = requiredParameters.filter(param => !(param in body));
+    if(Object.keys(body).length < 6 || missingParameters.length > 0) {
+        return sendResponse(400, {message: "error in body"})
+    } 
     
     const checkInDate = body.checkInDate;
     const checkOutDate = body.checkOutDate;
