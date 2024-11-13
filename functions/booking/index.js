@@ -24,22 +24,42 @@ exports.handler = async (event, context) => {
         return sendResponse(400, {message: "error in body"})
     } 
     
-    const checkInDate = body.checkInDate;
-    const checkOutDate = body.checkOutDate;
-    const guests = body.guests;
-    const orderName = body.name;
-    const orderEmail = body.email;
-    const rooms = body.rooms;
+    const { checkInDate, checkOutDate, guests, name, email, rooms } = body;
 
+    // validate roomcapacity
+    const roomCapacity = {
+        "single": 1,
+        "double": 2,
+        "suite": 3
+    };
+
+    const totalCapacity = rooms.reduce((sum, room) => {
+        const [roomType] = room.split('-');
+        return sum + (roomCapacity[roomType] || 0);
+    }, 0);
+
+    if (totalCapacity < guests) {
+        return sendResponse(400, { message: "Room capacity does not match the number of guests" });
+    }
+
+    // Validate date
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+
+    if (checkOut <= checkIn) {
+        return sendResponse(400, { message: "Check-out date must be after check-in date" });
+    }
+
+    // generate bookingID and create bookingobject
     const bookingID = nanoid();
-    
-    let booking = {id : bookingID,
-        name: orderName,
-        email: orderEmail,
-        checkInDate: checkInDate,
-        checkOutDate: checkOutDate,
-        guests: guests,
-        rooms: rooms
+    const booking = {
+        id: bookingID,
+        name,
+        email,
+        checkInDate,
+        checkOutDate,
+        guests,
+        rooms
     };
 
     await db.put({
@@ -49,9 +69,7 @@ exports.handler = async (event, context) => {
 
 
     return sendResponse(200, {booking: booking});
-
-
-}
+};
 
 
 
