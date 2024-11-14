@@ -67,10 +67,6 @@ functions:
       - httpApi:
           path: /booking/confirm
           method: get
-          request:
-          parameters:
-          querystrings:
-            bookingID: true
 
   addRooms:
     handler: functions/rooms/index.handler
