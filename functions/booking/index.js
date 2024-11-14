@@ -142,7 +142,7 @@ const addBooking = async (selectedRooms, body) => {
             Item: booking
         }).promise()
 
-        return true
+        return booking;
     }
 }
 
@@ -196,7 +196,7 @@ exports.handler = async (event, context) => {
 
 
 
-    addBooking(selectedRooms, body); 
+    const booking = await addBooking(selectedRooms, body); 
 
 
     // confirmation after booking
