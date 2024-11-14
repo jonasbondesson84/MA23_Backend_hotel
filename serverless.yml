@@ -36,14 +36,53 @@ resources:
           - AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+  
+    bookingsDB:
+        Type: AWS::DynamoDB::Table
+        Properties:
+          TableName: 'rooms-db'
+          AttributeDefinitions: 
+            - AttributeName: id
+              AttributeType: S
+          KeySchema: 
+            - AttributeName: id
+              KeyType: HASH
+          BillingMode: PAY_PER_REQUEST
 
 functions:
+
   deleteBooking:
     handler: functions/deleteBooking/index.handler
     events:
       - httpApi:
           path: /bookings/{id}
           method: delete
-        
+
+  booking:
+    handler: functions/booking/index.handler
+    events:
+      - httpApi:
+          path: /booking
+          method: post
+
+  confirmBooking:
+    handler: functions/confirmBooking/confirmBooking.handler
+    events:
+      - httpApi:
+          path: /booking/confirm
+          method: get
+
+  addRooms:
+    handler: functions/rooms/index.handler
+    events:
+      - httpApi:
+          path: /rooms/add
+          method: post
 
 
+  getAllBookings:
+    handler: functions/getAllBookings/index.handler
+    events:
+      - httpApi:
+          path: /bookings
+          method: get
