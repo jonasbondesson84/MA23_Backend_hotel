@@ -23,7 +23,6 @@ package:
 build:
   esbuild: false
 
-
 resources:
   Resources:
     hotelDB:
@@ -50,10 +49,15 @@ resources:
               KeyType: HASH
           BillingMode: PAY_PER_REQUEST
 
-  
-
-
 functions:
+
+  deleteBooking:
+    handler: functions/deleteBooking/index.handler
+    events:
+      - httpApi:
+          path: /bookings/{id}
+          method: delete
+
   booking:
     handler: functions/booking/index.handler
     events:
