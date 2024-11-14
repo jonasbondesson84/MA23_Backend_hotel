@@ -61,28 +61,28 @@ functions:
           path: /booking
           method: post
 
-  confirmBooking:
-    handler: functions/confirmBooking/confirmBooking.handler
-    events:
-      - httpApi:
-          path: /booking/confirm
-          method: get
-          request:
-          parameters:
-          querystrings:
-            bookingID: true
+  # confirmBooking:
+  #   handler: functions/confirmBooking/confirmBooking.handler
+  #   events:
+  #     - httpApi:
+  #         path: /booking/confirm
+  #         method: get
+  #         request:
+  #         parameters:
+  #         querystrings:
+  #           bookingID: true
 
-  addRooms:
-    handler: functions/rooms/index.handler
-    events:
-      - httpApi:
-          path: /rooms/add
-          method: post
+  # addRooms:
+  #   handler: functions/rooms/index.handler
+  #   events:
+  #     - httpApi:
+  #         path: /rooms/add
+  #         method: post
 
 
-  getAllBookings:
-    handler: functions/getAllBookings/index.handler
-    events:
-      - httpApi:
-          path: /bookings
-          method: get
+  # getAllBookings:
+  #   handler: functions/getAllBookings/index.handler
+  #   events:
+  #     - httpApi:
+  #         path: /bookings
+  #         method: get
