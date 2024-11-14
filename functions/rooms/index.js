@@ -14,7 +14,8 @@ exports.handler = async (event, context) => {
             TableName: 'rooms-db',
             Item: {
                 id: `room-${index + 1}`,
-                type: room
+                type: room,
+                bookings: []
             }
         }).promise();
     });
