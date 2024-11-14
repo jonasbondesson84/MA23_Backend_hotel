@@ -27,16 +27,13 @@ exports.handler = async (event, context) => {
     const { checkInDate, checkOutDate, guests, name, email, rooms } = body;
 
     // validate roomcapacity
-    const roomCapacity = {
-        "single": 1,
-        "double": 2,
-        "suite": 3
-    };
+    const roomCapacity = { "single": 1, "double": 2, "suite": 3 };
+    const roomPrices = { "single": 500, "double": 1000, "suite": 1500 };
 
-    const roomsArray = Array.isArray(rooms) ? rooms : rooms[0].split(', ').map(room => room.trim());
-    const totalCapacity = roomsArray.reduce((sum, room) => {
+
+    const totalCapacity = rooms.reduce((sum, room) => {
         const [roomType] = room.split('-');
-        return sum + (roomCapacity[roomType.toLowerCase()] || 0);
+        return sum + (roomCapacity[roomType] || 0);
     }, 0);
 
     if (totalCapacity < guests) {
@@ -46,10 +43,16 @@ exports.handler = async (event, context) => {
     // Validate date
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
-
     if (checkOut <= checkIn) {
         return sendResponse(400, { message: "Check-out date must be after check-in date" });
     }
+
+    // calculate night and cost
+    const nights = (checkOut - checkIn) / (1000 * 60 * 60 * 24);
+    const totalCost = rooms.reduce((sum, room) => {
+        const [roomType] = room.split('-');
+        return sum + (roomPrices[roomType] * nights);
+    }, 0);
 
     // generate bookingID and create bookingobject
     const bookingID = nanoid();
@@ -60,7 +63,8 @@ exports.handler = async (event, context) => {
         checkInDate,
         checkOutDate,
         guests,
-        rooms
+        rooms,
+        totalCost
     };
 
     await db.put({
@@ -68,8 +72,20 @@ exports.handler = async (event, context) => {
         Item: booking
     }).promise()
 
+    // confirmation after booking
+    const confirmation = {
+        bookingID: booking.id,
+        guests: booking.guests,
+        roomCount: rooms.length,
+        totalCost: booking.totalCost,
+        checkInDate: booking.checkInDate,
+        checkOutDate: booking.checkOutDate,
+        guestName: booking.name
+    };
 
-    return sendResponse(200, {booking: booking});
+
+
+    return sendResponse(200, { message: "Booking confirmed", confirmation: confirmation });
 };
 
 
