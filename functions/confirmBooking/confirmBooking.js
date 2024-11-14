@@ -1,6 +1,9 @@
+const AWS = require('aws-sdk');
+const db = new AWS.DynamoDB.DocumentClient();
+
 module.exports.handler = async (event) => {
     try {
-        // Kontrollera om queryStringParameters innehåller bookingID
+        
         const bookingID = event.queryStringParameters ? event.queryStringParameters.bookingID : null;
 
         if (!bookingID) {
@@ -10,22 +13,27 @@ module.exports.handler = async (event) => {
             };
         }
 
-        // Simulerad bokningsdata, används här som mock-data för test
-        const booking = {
-            bookingID: bookingID,
-            guests: 2,
-            roomCount: 1,
-            totalCost: 2000,
-            checkInDate: "2024-12-01",
-            checkOutDate: "2024-12-05",
-            name: "Frida Dahlqvist",
-        };
+        // get booking from dynamodb
+        const result = await db.get({
+            TableName: 'hotel-db',
+            Key: { id: bookingID }
+        }).promise();
 
-        // Skapa en bekräftelse med bokningsinformation
+        const booking = result.Item;
+
+        // control booking exist
+        if (!booking) {
+            return {
+                statusCode: 404,
+                body: JSON.stringify({ message: 'Booking not found' }),
+            };
+        }
+
+        // create confirmation from database
         const confirmation = {
-            bookingID: booking.bookingID,
+            bookingID: booking.id,
             guests: booking.guests,
-            roomCount: booking.roomCount,
+            roomCount: booking.rooms.length,
             totalCost: booking.totalCost,
             checkInDate: booking.checkInDate,
             checkOutDate: booking.checkOutDate,
