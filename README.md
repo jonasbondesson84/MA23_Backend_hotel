@@ -73,7 +73,7 @@ The bookings endpoint retrieves a list of all bookings to provide an overview of
 
  ### deleteBooking
  	•	If bookingID is provided and cancelled within 2 days before arrival: Returns a cancellation confirmation
-  	•	If bookingID is provided and cancalled later than 2 days before arrival: Returns message refering to cancellation policy
+  	•	If bookingID is provided and cancdlled later than 2 days before arrival: Returns message refering to cancellation policy
    	•	If bookingID is : Returns an error indicating the there is no booking in mentioned ID.	
 	•	Error Handling: Responds with a general error message if an internal error occurs.
 
