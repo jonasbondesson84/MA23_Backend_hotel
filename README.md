@@ -56,7 +56,7 @@ The bookings endpoint retrieves a list of all bookings to provide an overview of
  	•	If checkInDate is after checkOutDate: Returns an error indicating date-error
   	•	If body is provided: Checks if there are rooms available:
    			•	If not: Returns an error
-      			•	Else: Reservs the rooms in rooms-db and adds a booking in hotel-db, 
+      		•	Else: Reservs the rooms in rooms-db and adds a booking in hotel-db, 
 	 returns a confirmation of the booking, including bookingID, guest count, room count, total cost, check-in and check-out dates, and guest name
 	
 
