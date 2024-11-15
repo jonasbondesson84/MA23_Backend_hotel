@@ -39,6 +39,12 @@ The confirmBooking endpoint retrieves a booking confirmation based on a provided
 	•	Path: /booking/confirm
 	•	Query Parameter:
 	•	bookingID (required): The unique ID of the booking to confirm.
+
+ ### deleteBooking Endpoint
+
+The bookings endpoint deletes booking by its unique ID. Enter ID number.
+	•	Method: DELETE
+	•	Path: /bookings
  
 
 ### bookings Endpoint
@@ -63,6 +69,12 @@ The bookings endpoint retrieves a list of all bookings to provide an overview of
 ### confirmBooking:
 	•	If bookingID is provided: Returns a confirmation with booking details, including guest count, room count, total cost, check-in and check-out dates, and guest name.
 	•	If bookingID is missing: Returns an error indicating the ID is required.
+	•	Error Handling: Responds with a general error message if an internal error occurs.
+
+ ### deleteBooking
+ 	•	If bookingID is provided and cancelled within 2 days before arrival: Returns a cancellation confirmation
+  	•	If bookingID is provided and cancalled later than 2 days before arrival: Returns message refering to cancellation policy
+   	•	If bookingID is : Returns an error indicating the there is no booking in mentioned ID.	
 	•	Error Handling: Responds with a general error message if an internal error occurs.
 
 ### bookings:
