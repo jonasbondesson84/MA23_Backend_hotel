@@ -1,7 +1,7 @@
 
 const {sendResponse} = require('../responses/index');
 
-
+const moment = require('moment');
 const AWS = require('aws-sdk');
 const db = new AWS.DynamoDB.DocumentClient();
 
@@ -51,7 +51,7 @@ const getRoomsByType = async (roomType, checkIn, checkOut) => {
                         return false;
                     } 
             }
-            return true
+            return false
         }) 
 
         return availableRooms;
@@ -215,6 +215,11 @@ const addBooking = async (availableRooms, body) => {
             checkOutDate,
             guests,
             rooms: bookedRooms.map(room => room.roomID),
+            // rooms:  bookedRooms.map(room => ({
+            //     roomID: room.roomID,
+            //     roomType: room.roomType,
+            //     bookingID: room.bookingID
+            // })),
             bookedRoomsID: bookedRooms.map(room => room.bookingID)
         };
 
