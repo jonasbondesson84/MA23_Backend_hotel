@@ -35,14 +35,15 @@ const getRoomsByType = async (roomType, checkIn, checkOut) => {
                 return true;
             }
 
-            // Kontrollera alla bokningar för att se om någon överlappar med den nya perioden
+            // Checks all bookings to see if any overlaps
             for (const booking of room.bookings) {
                 const existingCheckIn = new Date(booking.checkInDate);
                 const existingCheckOut = new Date(booking.checkOutDate);
-
+            
                 const checkInDate = new Date(checkIn);
                 const checkOutDate= new Date(checkOut);
-                // Om någon bokning överlappar, välj inte detta rum
+                
+                // if overlaps, dont choose this room
                 if ((checkInDate >= existingCheckIn && checkInDate <= existingCheckOut) || 
                     (checkOutDate >= existingCheckIn && checkOutDate <= existingCheckOut) || 
                     (checkInDate <= existingCheckIn && checkOutDate >= existingCheckOut)
@@ -69,7 +70,13 @@ const checkRooms = async (rooms, checkInDate, checkOutDate) => {
         try {
             const roomsOfType = await getRoomsByType(room, checkInDate, checkOutDate);
             if (roomsOfType && roomsOfType.length > 0) {
-                availableRooms.push(...roomsOfType.slice(0, rooms.length - availableRooms.length));  
+                for (room of roomsOfType) {
+                    if (!(availableRooms.some(e => e.id === room.id))) {
+                        availableRooms.push(room);
+                        break;
+                    }
+                }
+                
             } else {
                 console.log(`No available rooms found for type: ${room}`);
             }
@@ -77,6 +84,7 @@ const checkRooms = async (rooms, checkInDate, checkOutDate) => {
             console.error("Error processing room:", error);
         }
     }
+    
     return availableRooms;
 };
 
@@ -89,31 +97,31 @@ const addRoomBooking = async (id, bookingID, checkInDate, checkOutDate) => {
     };
 
     try {
-        const roomData = await db.get(getParams).promise();
+        // const roomData = await db.get(getParams).promise();
 
-        // If room doesn't exist, log and return null
-        if (!roomData.Item) {
-            console.log(`Room ${id} not found`);
-            return null;
-        }
+        // // If room doesn't exist, log and return null
+        // if (!roomData.Item) {
+        //     console.log(`Room ${id} not found`);
+        //     return null;
+        // }
 
-        const existingBookings = roomData.Item.bookings || [];
+        // const existingBookings = roomData.Item.bookings || [];
 
-        // Check for overlaps
-        const hasOverlap = existingBookings.some(booking => {
-            const existingCheckIn = new Date(booking.checkInDate);
-            const existingCheckOut = new Date(booking.checkOutDate);
-            const newCheckIn = new Date(checkInDate);
-            const newCheckOut = new Date(checkOutDate);
+        // // Check for overlaps
+        // const hasOverlap = existingBookings.some(booking => {
+        //     const existingCheckIn = new Date(booking.checkInDate);
+        //     const existingCheckOut = new Date(booking.checkOutDate);
+        //     const newCheckIn = new Date(checkInDate);
+        //     const newCheckOut = new Date(checkOutDate);
 
-            return (newCheckIn < existingCheckOut && newCheckOut > existingCheckIn) ||
-                   (newCheckIn <= existingCheckIn && newCheckOut >= existingCheckOut);
-        });
+        //     return (newCheckIn < existingCheckOut && newCheckOut > existingCheckIn) ||
+        //            (newCheckIn <= existingCheckIn && newCheckOut >= existingCheckOut);
+        // });
 
-        if (hasOverlap) {
-            console.log(`Room ${id} is already booked for the requested dates.`);
-            return null; 
-        }
+        // if (hasOverlap) {
+        //     console.log(`Room ${id} is already booked for the requested dates.`);
+        //     return null; 
+        // }
 
         // Proceed with booking the room if no overlap
         const updateParams = {
@@ -274,7 +282,6 @@ exports.handler = async (event, context) => {
         return sendResponse(400, { message: "Check-out date must be after check-in date" });
     }
 
-    const selectedRooms = await checkRooms(rooms, checkInDate, checkOutDate);
 
     // Calculate night and cost
     const nights = (checkOut - checkIn) / (1000 * 60 * 60 * 24);
@@ -282,7 +289,10 @@ exports.handler = async (event, context) => {
         const [roomType] = room.split('-');
         return sum + (roomPrices[roomType] * nights);
     }, 0);
+    //get available rooms
+    const selectedRooms = await checkRooms(rooms, checkInDate, checkOutDate);
 
+    //makes a booking
     const booking = await addBooking(selectedRooms, body);
 
     if (!booking.success) {
