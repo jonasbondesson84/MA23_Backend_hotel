@@ -26,8 +26,8 @@ The booking endpoint add booking to database.
 	•	Query Parameter:
 	•	body: {"name": "jonas Bondesson",
 			"email" : "test@test.com",
-	 		"checkInDate": "21-01-22",
- 			"checkOutDate": "21-01-23",
+	 		"checkInDate": "2021/01/22",
+ 			"checkOutDate": "2021/01/23",
  			"guests": 5,
  			"rooms": ["suite", "double"]
  		}
