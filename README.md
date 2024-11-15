@@ -10,63 +10,6 @@ authorName: 'Serverless, Inc.'
 authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
 -->
 
-# Serverless Framework Node HTTP API on AWS
-
-This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.
-
-This template does not include any kind of persistence (database). For more advanced examples, check out the [serverless/examples repository](https://github.com/serverless/examples/) which includes Typescript, Mongo, DynamoDB and other examples.
-
-## Usage
-
-### Deployment
-
-In order to deploy the example, you need to run the following command:
-
-```
-serverless deploy
-```
-
-After running deploy, you should see output similar to:
-
-```
-Deploying "serverless-http-api" to stage "dev" (us-east-1)
-
-✔ Service deployed to stack serverless-http-api-dev (91s)
-
-endpoint: GET - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/
-functions:
-  hello: serverless-http-api-dev-hello (1.6 kB)
-```
-
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [HTTP API (API Gateway V2) event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api).
-
-### Invocation
-
-After successful deployment, you can call the created application via HTTP:
-
-```
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
-```
-
-Which should result in response similar to:
-
-```json
-{ "message": "Go Serverless v4! Your function executed successfully!" }
-```
-
-### Local development
-
-The easiest way to develop and test your function is to use the `dev` command:
-
-```
-serverless dev
-```
-
-This will start a local emulator of AWS Lambda and tunnel your requests to and from AWS Lambda, allowing you to interact with your function as if it were running in the cloud.
-
-Now you can invoke the function as before, but this time the function will be executed locally. Now you can develop your function locally, invoke it, and see the results immediately without having to re-deploy.
-
-When you are done developing, don't forget to run `serverless deploy` to deploy the function to the cloud.
 
 
 # MA23_Backend_hotel API
@@ -74,6 +17,20 @@ When you are done developing, don't forget to run `serverless deploy` to deploy 
 This project is a serverless hotel booking API built using AWS Lambda, DynamoDB, and API Gateway.
 
 ## Endpoints
+
+### booking Endpoint
+
+The booking endpoint add booking to database.
+	•	Method: POST
+	•	Path: /booking
+	•	Query Parameter:
+	•	body: {"name": "jonas Bondesson",
+			"email" : "test@test.com",
+	 		"checkInDate": "21-01-22",
+ 			"checkOutDate": "21-01-23",
+ 			"guests": 5,
+ 			"rooms": ["suite", "double"]
+ 		}
 
 ### confirmBooking Endpoint
 
@@ -92,6 +49,15 @@ The bookings endpoint retrieves a list of all bookings to provide an overview of
 
 
 ## Functionality
+
+### booking
+	•	If not enough parameters in body, or required is not in body: Returns an error indicating body is not correct.
+	•	If room capacity is not enough based on guest: Returns an error indicating rooms is not enough
+ 	•	If checkInDate is after checkOutDate: Returns an error indicating date-error
+  	•	If body is provided: Checks if there are rooms available:
+   			•	If not: Returns an error
+      			•	Else: Reservs the rooms in rooms-db and adds a booking in hotel-db, returns a confirmation of the booking, including bookingID, guest count, room count, total cost, check-in and check-out dates, and guest name
+	
 
 ### confirmBooking:
 	•	If bookingID is provided: Returns a confirmation with booking details, including guest count, room count, total cost, check-in and check-out dates, and guest name.
